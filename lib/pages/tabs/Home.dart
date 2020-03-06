@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:flutter_mall/services/ScreenAdaper.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -30,6 +31,7 @@ class _HomePageState extends State<HomePage> {
                 autoplay: true)));
   }
 
+  // 标题
   Widget _titleWidget(value) {
     return Container(
       height: ScreenUtil.getInstance().setHeight(32),
@@ -45,17 +47,50 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // 热门商品
+  Widget _hotProductListWidget() {
+    return Container(
+      height: ScreenAdaper.height(234),
+      padding: EdgeInsets.all(ScreenAdaper.width(20)),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (contxt, index) {
+          return Column(
+            children: <Widget>[
+              Container(
+                height: ScreenAdaper.height(140),
+                width: ScreenAdaper.width(140),
+                margin: EdgeInsets.only(right: ScreenAdaper.width(21)),
+                child: Image.network(
+                    "https://www.itying.com/images/flutter/hot${index + 1}.jpg",
+                    fit: BoxFit.cover),
+              ),
+              Container(
+                padding: EdgeInsets.only(top: ScreenAdaper.height(10)),
+                height: ScreenAdaper.height(44),
+                child: Text("第$index条"),
+              )
+            ],
+          );
+        },
+        itemCount: 10,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance = ScreenUtil(width: 750, height: 1334)..init(context);
+    ScreenAdaper.init(context);
 
     return ListView(
       children: <Widget>[
         _swiperWidget(),
-        SizedBox(height: 10),
+        SizedBox(height: ScreenAdaper.height(20)),
         _titleWidget('猜你喜欢'),
-        SizedBox(height: 10),
-        _titleWidget('全部商品'),
+        SizedBox(height: ScreenAdaper.height(20)),
+        _hotProductListWidget(),
+        SizedBox(height: ScreenAdaper.height(20)),
+        _titleWidget('热门推荐'),
       ],
     );
   }
