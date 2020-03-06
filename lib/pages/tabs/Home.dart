@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:flutter_mall/services/ScreenAdaper.dart';
+import 'package:jd_mall/services/ScreenAdaper.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -78,6 +78,66 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  //推荐商品
+
+  _recProductItemWidget() {
+    var itemWidth = (ScreenAdaper.getScreenWidth() - 30) / 2;
+
+    return Container(
+      padding: EdgeInsets.all(10),
+      width: itemWidth,
+      decoration: BoxDecoration(
+          border:
+              Border.all(color: Color.fromRGBO(233, 233, 233, 0.9), width: 1)),
+      child: Column(
+        children: <Widget>[
+          Container(
+            width: double.infinity,
+            child: AspectRatio(
+              //防止服务器返回的图片大小不一致导致高度不一致问题
+              aspectRatio: 1 / 1,
+              child: Image.network(
+                "https://www.itying.com/images/flutter/list1.jpg",
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: ScreenAdaper.height(20)),
+            child: Text(
+              "2019夏季新款气质高贵洋气阔太太有女人味中长款宽松大码",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.black54),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: ScreenAdaper.height(20)),
+            child: Stack(
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "¥188.0",
+                    style: TextStyle(color: Colors.red, fontSize: 16),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text("¥198.0",
+                      style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 14,
+                          decoration: TextDecoration.lineThrough)),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenAdaper.init(context);
@@ -91,6 +151,22 @@ class _HomePageState extends State<HomePage> {
         _hotProductListWidget(),
         SizedBox(height: ScreenAdaper.height(20)),
         _titleWidget('热门推荐'),
+        SizedBox(height: ScreenAdaper.height(20)),
+        Container(
+          padding: EdgeInsets.all(10),
+          child: Wrap(
+            runSpacing: 10,
+            spacing: 10,
+            children: <Widget>[
+              _recProductItemWidget(),
+              _recProductItemWidget(),
+              _recProductItemWidget(),
+              _recProductItemWidget(),
+              _recProductItemWidget(),
+              _recProductItemWidget()
+            ],
+          ),
+        )
       ],
     );
   }
