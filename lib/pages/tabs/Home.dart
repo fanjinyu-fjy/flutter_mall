@@ -14,13 +14,19 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+
   List<FocusItemModel> _focusData = [];
   List<ProductItemModel> _hotProductList = [];
   List<ProductItemModel> _bestProductList = [];
   @override
   void initState() {
     super.initState();
+    print('Home');
     _getFocusData();
     _getHotProductData();
     _getBestProductData();

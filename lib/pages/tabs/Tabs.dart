@@ -14,7 +14,16 @@ class Tabs extends StatefulWidget {
 class _TabsState extends State<Tabs> {
   int _currentIndex = 0;
 
-  List _pageList = [HomePage(), CategoryPage(), CartPage(), UserPage()];
+  //创建页面控制器
+  var _pageController;
+  @override
+  void initState() {
+    //页面控制器初始化
+    _pageController = new PageController(initialPage: _currentIndex);
+    super.initState();
+  }
+
+  List<Widget> _pageList = [HomePage(), CategoryPage(), CartPage(), UserPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +31,20 @@ class _TabsState extends State<Tabs> {
       appBar: AppBar(
         title: Text("shop"),
       ),
-      body: this._pageList[this._currentIndex],
+      body: PageView(
+        controller: _pageController,
+        children: this._pageList,
+        onPageChanged: (index) {
+          _currentIndex = index;
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: this._currentIndex,
         onTap: (index) {
           setState(() {
             this._currentIndex = index;
+            //页面控制器进行跳转
+            _pageController.jumpToPage(this._currentIndex);
           });
         },
         type: BottomNavigationBarType.fixed,
