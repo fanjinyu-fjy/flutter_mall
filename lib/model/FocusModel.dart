@@ -21,15 +21,15 @@ class FocusModel {
 }
 
 class FocusItemModel {
-  String id;
+  String sid;
   String title;
   String status;
   String pic;
   String url;
 
-  FocusItemModel({this.id, this.title, this.status, this.pic, this.url});
+  FocusItemModel({this.sid, this.title, this.status, this.pic, this.url});
   FocusItemModel.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
+    sid = json['_id'];
     title = json['title'];
     status = json['status'];
     pic = json['pic'];
@@ -38,7 +38,7 @@ class FocusItemModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.id;
+    data['_id'] = this.sid;
     data['title'] = this.title;
     data['status'] = this.status;
     data['pic'] = this.pic;
