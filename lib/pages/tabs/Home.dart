@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:jd_mall/services/ScreenAdaper.dart';
+import 'package:flutter_mall/model/FocusModel.dart';
+import 'package:flutter_mall/services/ScreenAdaper.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -11,24 +13,48 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<FocusItemModel> _focusData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getFocusData();
+  }
+
+  // 获得轮播图数据
+  _getFocusData() async {
+    var api = 'http://jd.itying.com/api/focus';
+    var result = await Dio().get(api);
+
+    FocusModel focusList = FocusModel.fromJson(result.data);
+
+    setState(() {
+      this._focusData = focusList.result;
+    });
+  }
+
   // 轮播图
   Widget _swiperWidget() {
-    List<Map> imgList = [
-      {"url": "https://www.itying.com/images/flutter/slide01.jpg"},
-      {"url": "https://www.itying.com/images/flutter/slide02.jpg"},
-      {"url": "https://www.itying.com/images/flutter/slide03.jpg"},
-    ];
-    return Container(
+    if (this._focusData.length > 0) {
+      return Container(
         child: AspectRatio(
-            aspectRatio: 2 / 1,
-            child: Swiper(
-                itemBuilder: (BuildContext context, int index) {
-                  return new Image.network(imgList[index]['url'],
-                      fit: BoxFit.fill);
-                },
-                itemCount: imgList.length,
-                pagination: new SwiperPagination(),
-                autoplay: true)));
+          aspectRatio: 2 / 1,
+          child: Swiper(
+            itemBuilder: (BuildContext context, int index) {
+              String pic = this._focusData[index].pic;
+              return new Image.network(
+                  "http://jd.itying.com/${pic.replaceAll('\\', '/')}",
+                  fit: BoxFit.fill);
+            },
+            itemCount: this._focusData.length,
+            pagination: new SwiperPagination(),
+            autoplay: true,
+          ),
+        ),
+      );
+    } else {
+      return Text('loading....');
+    }
   }
 
   // 标题
@@ -79,7 +105,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   //推荐商品
-
   _recProductItemWidget() {
     var itemWidth = (ScreenAdaper.getScreenWidth() - 30) / 2;
 
