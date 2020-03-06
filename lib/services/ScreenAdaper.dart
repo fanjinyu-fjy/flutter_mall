@@ -20,6 +20,14 @@ class ScreenAdaper {
   static getScreenWidth() {
     return ScreenUtil.screenWidthDp;
   }
+
+  static getScreenPxHeight() {
+    return ScreenUtil.screenHeight;
+  }
+
+  static getScreenPxWidth() {
+    return ScreenUtil.screenWidth;
+  }
   // ScreenUtil.screenHeight
 }
 
