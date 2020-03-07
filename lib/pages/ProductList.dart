@@ -17,32 +17,85 @@ class ProductListPage extends StatefulWidget {
 class _ProductListPageState extends State<ProductListPage> {
   // Scaffold Key
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  //用于上拉分页
+  ScrollController _scrollController = ScrollController(); //listview 的控制器
   // 分页
   int _page = 1;
+  //每页有多少条数据
+  int _pageSize = 8;
   // 商品数据
   List<ProductItemModel> _productList = [];
   // 排序
   String _sort = '';
 
+  //解决重复请求的问题
+  bool flag = true;
+  //是否有数据
+  bool _hasMore = true;
+
   @override
   void initState() {
     super.initState();
     _getProductListData();
+
+    //监听滚动条滚动事件
+    _scrollController.addListener(() {
+      //_scrollController.position.pixels //获取滚动条滚动的高度
+      //_scrollController.position.maxScrollExtent  //获取页面高度
+      if (_scrollController.position.pixels >
+          _scrollController.position.maxScrollExtent - 20) {
+        if (this.flag && this._hasMore) {
+          _getProductListData();
+        }
+      }
+    });
+  }
+
+  //显示加载中的圈圈
+  Widget _showMore(index) {
+    if (this._hasMore) {
+      return (index == this._productList.length - 1)
+          ? LoadingWidget()
+          : Text("");
+    } else {
+      return (index == this._productList.length - 1)
+          ? Text("--我是有底线的--")
+          : Text("");
+      ;
+    }
   }
 
   // 获取商品列表数据
   _getProductListData() async {
+    // 先加锁  防止重复渲染
+    setState(() {
+      this.flag = false;
+    });
+
     String api =
         '${Config.domain}api/plist?cid=${widget.arguments["cid"]}&page=${this._page}&sort=${this._sort}';
 
+    print(api);
     var result = await Dio().get(api);
 
     ProductModel productList = new ProductModel.fromJson(result.data);
-    print(productList.result);
-    setState(() {
-      this._productList.addAll(productList.result);
-    });
+
+    // 用来判断后面是否还有数据
+    if (productList.result.length < this._pageSize) {
+      setState(() {
+        // this._productList = productList.result;
+        this._productList.addAll(productList.result);
+        this._hasMore = false;
+        this.flag = true;
+      });
+    } else {
+      setState(() {
+        // this._productList = productList.result;
+        this._productList.addAll(productList.result);
+        this._page++;
+        this.flag = true;
+      });
+    }
   }
 
   //商品列表渲染
@@ -53,6 +106,7 @@ class _ProductListPageState extends State<ProductListPage> {
         margin: EdgeInsets.only(top: ScreenAdaper.height(80)), //给顶部筛选导航的空间
         child: ListView.builder(
           itemCount: this._productList.length,
+          controller: _scrollController,
           itemBuilder: (context, index) {
             ProductItemModel product = this._productList[index];
             // 处理图片
@@ -118,7 +172,8 @@ class _ProductListPageState extends State<ProductListPage> {
                     )
                   ],
                 ),
-                Divider(height: 20)
+                Divider(height: 20),
+                _showMore(index)
               ],
             );
           },
