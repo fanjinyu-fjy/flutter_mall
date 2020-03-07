@@ -1,4 +1,4 @@
-package com.example.jd_mall
+package com.example.flutter_mall
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
