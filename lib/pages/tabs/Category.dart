@@ -120,19 +120,26 @@ class _CategoryPageState extends State<CategoryPage>
                 pic = Config.domain + pic.replaceAll('\\', '/');
 
                 String title = this._rightCateList[index].title;
-                return Container(
-                  child: Column(
-                    children: <Widget>[
-                      AspectRatio(
-                        aspectRatio: 1 / 1,
-                        child: Image.network("$pic", fit: BoxFit.cover),
-                      ),
-                      Container(
-                        height: ScreenAdaper.height(28),
-                        alignment: Alignment.center,
-                        child: Text("$title"),
-                      )
-                    ],
+                return InkWell(
+                  onTap: () {
+                    print('onTap');
+                    Navigator.pushNamed(context, '/productList',
+                        arguments: {"cid": this._rightCateList[index].sId});
+                  },
+                  child: Container(
+                    child: Column(
+                      children: <Widget>[
+                        AspectRatio(
+                          aspectRatio: 1 / 1,
+                          child: Image.network("$pic", fit: BoxFit.cover),
+                        ),
+                        Container(
+                          height: ScreenAdaper.height(28),
+                          alignment: Alignment.center,
+                          child: Text("$title"),
+                        )
+                      ],
+                    ),
                   ),
                 );
               },
